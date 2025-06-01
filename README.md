@@ -1,6 +1,7 @@
-# network_cli
-Basic CLI app to ping or send message by 5G
-Chương trình mô phỏng gửi tin nhắn, giả video bằng dữ liệu.
+  # network_cli
+  Basic CLI app to ping or send message by 5G
+  Chương trình mô phỏng gửi tin nhắn, giả video bằng dữ liệu.
+  # StepStep
 Đầu tiên cần khởi động 5G core, gNodeB và UE.
 Sau đó chạy chương trình bằng lệnh python3 network_cli.py trong thư mục chứa.
 Màn hình sẽ hiện ra menu các lựa chọn.
