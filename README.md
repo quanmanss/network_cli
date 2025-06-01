@@ -1,4 +1,4 @@
-network_cli
+# network_cli
 
 Ứng dụng CLI cơ bản cho việc ping hoặc gửi tin nhắn qua mạng 5G.
 Mô tả
@@ -22,7 +22,7 @@ Cài đặt
     bash
 
 git clone https://github.com/quanmanss/network_cli.git
-cd network_cli
+    cd network_cli
 
 (Nếu cần) Cài đặt các thư viện phụ thuộc:
 bash
@@ -49,8 +49,4 @@ Mọi đóng góp đều được hoan nghênh!
     Fork repository, tạo nhánh mới và PR.
     Vui lòng mô tả rõ ràng các thay đổi khi gửi pull request.
 
-Giấy phép
 
-Dự án này sử dụng giấy phép MIT. Xem file LICENSE để biết thêm chi tiết.
-
-Nếu muốn thêm hình ảnh, badge hoặc hướng dẫn cụ thể hơn, hãy cho tôi biết nhé!
