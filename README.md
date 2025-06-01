@@ -1,11 +1,56 @@
-  # network_cli
-  Basic CLI app to ping or send message by 5G
-  Chương trình mô phỏng gửi tin nhắn, giả video bằng dữ liệu.
-  # Step
-Đầu tiên cần khởi động 5G core, gNodeB và UE.
+network_cli
 
-Sau đó chạy chương trình bằng lệnh python3 network_cli.py trong thư mục chứa.
-Màn hình sẽ hiện ra menu các lựa chọn.
-Ví dụ cần gửi tin nhắn bằng TCP, ta cần khởi tạo TCP server (nhấn phím 1), nhập IP ( mặc định không nhập là 0.0.0.0 là nghe từ mọi nguồn) và cổng (thường chọn số lớn ví dụ 12345). Mở Terminal khác và chạy Client để nhập gửi tin nhắn.
-Tương tự với gửi video cần chạy UDP server. Chương trình chỉ mô phỏng gửi hàng loạt các văn bản ngẫu nhiên với các tham số thời gian, dung lượng,..
-Một vài chức năng như nhấn phím 4 còn đang sửa đổi chưa dùng được hoặc không cần thiết.
+Ứng dụng CLI cơ bản cho việc ping hoặc gửi tin nhắn qua mạng 5G.
+Mô tả
+
+network_cli là chương trình mô phỏng gửi tin nhắn hoặc giả lập truyền video bằng dữ liệu qua mạng 5G. Ứng dụng này giúp kiểm thử và trình diễn các tính năng mạng lõi (core), trạm gNodeB và thiết bị UE trong môi trường 5G.
+Tính năng
+
+    Gửi tin nhắn qua TCP.
+    Mô phỏng gửi video (gửi hàng loạt văn bản ngẫu nhiên) qua UDP.
+    Giao diện menu thân thiện, dễ sử dụng.
+    Một số chức năng đang phát triển (ví dụ: phím 4).
+
+Yêu cầu hệ thống
+
+    Python 3.x
+    Các thành phần mạng 5G core, gNodeB và UE đã được khởi động.
+
+Cài đặt
+
+    Clone repository:
+    bash
+
+git clone https://github.com/quanmanss/network_cli.git
+cd network_cli
+
+(Nếu cần) Cài đặt các thư viện phụ thuộc:
+bash
+
+    pip install -r requirements.txt
+
+Sử dụng
+
+    Đảm bảo đã khởi động 5G core, gNodeB và UE.
+    Chạy chương trình trong thư mục chứa file:
+    bash
+
+    python3 network_cli.py
+
+    Màn hình sẽ hiện menu các lựa chọn:
+        Gửi tin nhắn qua TCP: Nhấn phím 1, nhập IP (mặc định là 0.0.0.0) và cổng.
+        Gửi video qua UDP: Nhấn phím tương ứng, nhập các tham số thời gian, dung lượng,...
+        Một số chức năng như phím 4 đang phát triển.
+
+Đóng góp
+
+Mọi đóng góp đều được hoan nghênh!
+
+    Fork repository, tạo nhánh mới và PR.
+    Vui lòng mô tả rõ ràng các thay đổi khi gửi pull request.
+
+Giấy phép
+
+Dự án này sử dụng giấy phép MIT. Xem file LICENSE để biết thêm chi tiết.
+
+Nếu muốn thêm hình ảnh, badge hoặc hướng dẫn cụ thể hơn, hãy cho tôi biết nhé!
