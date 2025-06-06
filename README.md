@@ -9,6 +9,7 @@ Tính năng
 
     Gửi tin nhắn qua TCP.
     Mô phỏng gửi video (gửi hàng loạt văn bản ngẫu nhiên) qua UDP.
+    Đo datarate bằng Iperf3
     Giao diện menu thân thiện, dễ sử dụng.
     Một số chức năng đang phát triển (ví dụ: phím 4).
 
@@ -23,7 +24,8 @@ Cài đặt
     bash
 
 git clone https://github.com/quanmanss/network_cli.git
-    cd network_cli
+
+cd network_cli
 
 Sử dụng
 
