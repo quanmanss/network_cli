@@ -1,10 +1,8 @@
-import argparse
 import socket
 import subprocess
 import time
 import struct
 import os
-import http.client
 from urllib.parse import urlparse
 
 # --- Chức năng Ping ---
@@ -141,28 +139,73 @@ def udp_server(host, port):
         s.bind((host, port))
         print("Chờ dữ liệu...")
 
+        start_time = None
+        last_packet_time = None
+        total_bytes_received = 0
+        packet_count = 0
+        
+        print("\n--- Đang chờ gói tin để bắt đầu đo lường ---")
+
         while True:
             data, addr = s.recvfrom(4096)
-            # Nếu dữ liệu không phải text, không phản hồi
-            try:
-                decoded_data = data.decode('utf-8')
-                print(f"Nhận từ {addr}: {decoded_data}")
-                # Chỉ phản hồi nếu giải mã được UTF-8 (tức là client gửi text)
-                response_message = f"Server received: '{decoded_data}'".encode('utf-8')
-                s.sendto(response_message, addr)
-            except UnicodeDecodeError:
-                print(f"Nhận dữ liệu nhị phân từ {addr} (không phản hồi).")
-                continue
+            
+            if start_time is None:
+                start_time = time.time() # Ghi lại thời gian nhận gói đầu tiên
+                print(f"\n--- Bắt đầu đo lường từ {addr} ---")
+
+            last_packet_time = time.time() # Ghi lại thời gian nhận gói hiện tại
+            total_bytes_received += len(data)
+            packet_count += 1
+            
+            # (Phần giải mã và in ra nội dung đã có trong bản sửa lỗi trước, giữ nguyên)
+            # print(f"Nhận được {len(data)} bytes từ {addr}.")
+            # decoded_content = "[Dữ liệu không phải văn bản hoặc mã hóa không tương thích]"
+            # is_text_data = False
+            # try:
+            #     temp_decoded = data.decode('utf-8', errors='replace').strip()
+            #     if temp_decoded.count('\ufffd') * 2 > len(temp_decoded):
+            #         pass # Đây là dữ liệu nhị phân
+            #     else:
+            #         decoded_content = temp_decoded
+            #         is_text_data = True
+            #         print(f"  --> Giải mã UTF-8 thành: '{decoded_content}'")
+            # except Exception:
+            #     pass # Lỗi giải mã, coi là nhị phân
+
+            # if is_text_data:
+            #     response_message = f"Server received text: '{decoded_content}'".encode('utf-8')
+            # else:
+            #     response_message = f"Server received {len(data)} bytes (binary)".encode('utf-8')
+            # s.sendto(response_message, addr)
+            
+            # In thông báo trạng thái nhỏ gọn để không làm ngập console
+            # if packet_count % 100 == 0:
+            #     print(f"Đã nhận {packet_count} gói, {total_bytes_received / (1024 * 1024):.2f} MB")
 
     except KeyboardInterrupt:
         print("\n[UDP Server] Server bị ngắt bởi người dùng (Ctrl+C).")
+        # Tính toán và in kết quả khi dừng server
+        if start_time is not None and last_packet_time is not None and total_bytes_received > 0:
+            actual_duration = last_packet_time - start_time
+            if actual_duration > 0:
+                throughput_mbps = (total_bytes_received * 8) / (actual_duration * 1024 * 1024)
+                throughput_mb_per_s = total_bytes_received / (actual_duration * 1024 * 1024)
+                print(f"\n--- Báo cáo hiệu suất UDP Server ---")
+                print(f"Tổng dữ liệu đã nhận: {total_bytes_received / (1024 * 1024):.2f} MB")
+                print(f"Tổng số gói nhận: {packet_count}")
+                print(f"Thời gian nhận thực tế: {actual_duration:.2f} giây")
+                print(f"**Tốc độ truyền (Nhận): {throughput_mbps:.2f} Mbps ({throughput_mb_per_s:.2f} MB/s)**")
+            else:
+                print("Thời gian nhận quá ngắn để tính tốc độ truyền.")
+        else:
+            print("Không có dữ liệu nào được nhận để tính toán.")
+
     except Exception as e:
-        print(f"[UDP Server] Đã xảy ra lỗi: {e}")
+        print(f"[UDP Server] Đã xảy ra lỗi tổng quát: {e}")
     finally:
         if 's' in locals() and s:
             s.close()
         print("[UDP Server] Đã dừng.")
-
 
 def send_video_udp(host, port, duration=10, packet_size=1400, interval=0.01):
     """
@@ -186,6 +229,46 @@ def send_video_udp(host, port, duration=10, packet_size=1400, interval=0.01):
     except Exception as e:
         print(f"Đã xảy ra lỗi khi gửi video qua UDP: {e}")
 
+import sys
+# ...existing code...
+
+def iperf3():
+    mode = input("Chọn chế độ (s: server, c: client): ").strip().lower()
+    if mode == 's':
+        command = "iperf3 -s"
+        print("==> Đang chạy iperf3 ở chế độ server...")
+    elif mode == 'c':
+        ip = input("Nhập IP server: ").strip()
+        command = f"sudo ip netns exec ue1 iperf3 -c {ip} -t 10"
+        print(f"==> Đang chạy iperf3 ở chế độ client tới {ip}...")
+    else:
+        print("Chỉ nhập 's' (server) hoặc 'c' (client).")
+        return
+
+    try:
+        process = subprocess.Popen(
+            command,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1
+        )
+        for line in process.stdout:
+            print(line, end='')
+        process.wait()
+    except FileNotFoundError:
+        print("❌ Lệnh 'iperf3' không tìm thấy. Hãy cài đặt iperf3.")
+    except KeyboardInterrupt:
+        print("\n[!] Đã dừng iperf3.")
+        if 'process' in locals() and process.poll() is None:
+            process.terminate()
+            process.wait()
+    except Exception as e:
+        print(f"❌ Lỗi khi chạy iperf3: {e}")
+
+
+
 def main_interactive():
     while True:
         print("\n--- Menu (Network CLI) ---")
@@ -195,6 +278,7 @@ def main_interactive():
         print("4. Chạy UDP Client (từ UE)")
         print("5. Chạy Video Client (từ UE)")
         print("6. Ping ")
+        print("7. Đo Data Rate bằng iperf3")
         print("0. Thoát")
         print("-------------------------------")
 
@@ -231,6 +315,8 @@ def main_interactive():
             send_video_udp(host, port, duration=10, packet_size=1400, interval=0.01)
         elif choice == '6':
             ping_host()
+        elif choice == '7':
+            iperf3()
         elif choice == '0':
             print("Đang thoát chương trình. Tạm biệt!")
             sys.exit(0)
