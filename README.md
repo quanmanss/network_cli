@@ -22,10 +22,8 @@ Cài đặt
 
     Clone repository:
     bash
-
-git clone https://github.com/quanmanss/network_cli.git
-
-cd network_cli
+    git clone https://github.com/quanmanss/network_cli.git
+    cd network_cli
 
 Sử dụng
 
