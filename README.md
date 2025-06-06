@@ -1,7 +1,8 @@
 # network_cli
 
 Ứng dụng CLI cơ bản cho việc ping hoặc gửi tin nhắn qua mạng 5G.
-Mô tả
+    
+    Mô tả
 
 network_cli là chương trình mô phỏng gửi tin nhắn hoặc giả lập truyền video bằng dữ liệu qua mạng 5G. Ứng dụng này giúp kiểm thử và trình diễn các tính năng mạng lõi (core), trạm gNodeB và thiết bị UE trong môi trường 5G.
 Tính năng
@@ -23,11 +24,6 @@ Cài đặt
 
 git clone https://github.com/quanmanss/network_cli.git
     cd network_cli
-
-(Nếu cần) Cài đặt các thư viện phụ thuộc:
-bash
-
-    pip install -r requirements.txt
 
 Sử dụng
 
