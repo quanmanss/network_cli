@@ -48,30 +48,28 @@ def ping_host():
 
 # --- Chức năng TCP ---
 def tcp_client(host, port, message, num_messages=1):
-    print(f"\n[UDP Client] Đang gửi tới {host}:{port}...")
+    print(f"\n[TCP Client] Đang gửi tới {host}:{port}...")
     try:
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((host, port))
             if message:
-                # Đảm bảo mã hóa UTF-8 ở phía client
-                encoded_message = message.encode('utf-8') 
-                s.sendto(encoded_message, (host, port))
+                encoded_message = message.encode('utf-8')
+                s.sendall(encoded_message)
                 print(f"Đã gửi {len(encoded_message)} bytes: '{message}'")
-                
-                # Chờ phản hồi từ server (UDP là không kết nối, không chắc server sẽ gửi lại ngay)
-                s.settimeout(5) # Đặt timeout để không chờ mãi
+                # Nhận phản hồi từ server
+                s.settimeout(5)
                 try:
-                    data, addr = s.recvfrom(4096)
+                    data = s.recv(4096)
                     decoded_response = data.decode('utf-8', errors='replace').strip()
-                    print(f"Nhận phản hồi từ {addr}: '{decoded_response}'")
+                    print(f"Nhận phản hồi từ server: '{decoded_response}'")
                 except socket.timeout:
                     print("Không nhận được phản hồi từ server trong thời gian quy định.")
                 except Exception as e:
-                    print(f"Lỗi khi nhận phản hồi UDP: {e}")
-
+                    print(f"Lỗi khi nhận phản hồi TCP: {e}")
     except Exception as e:
-        print(f"[UDP Client] Đã xảy ra lỗi: {e}")
+        print(f"[TCP Client] Đã xảy ra lỗi: {e}")
     finally:
-        print("[UDP Client] Đã dừng.")
+        print("[TCP Client] Đã dừng.")
 
 def tcp_server(host, port):
     print(f"\n[TCP Server] Đang lắng nghe trên {host}:{port}...")
